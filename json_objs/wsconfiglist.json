@@ -1,0 +1,10 @@
+{
+    "ifProd": "0",
+    "orgid": "US",
+    "parampath": "intfdef/configEX?orgid=US",
+    "path": "/bamappserver/rest/",
+    "port": "443",
+    "protocol": "https",
+    "server": "dynamic-mobile-adq.tls.liveblockauctions.com",
+    "statuscode": "97"
+}

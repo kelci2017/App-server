@@ -27,8 +27,7 @@ exports.create_a_task = function (req, res) {
 
 exports.read_a_task = function (req, res) {
     Task.findById(req.params.taskId, function (err, task) {
-        if (err)
-            res.send(err);
+        if (err) return res.send(err);
         res.json(task);
     });
 };

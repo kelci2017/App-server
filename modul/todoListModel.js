@@ -16,6 +16,10 @@ var TaskSchema = new Schema({
     status: {
         type: String,
         default: 'pending'
+    },
+    resultCode: {
+        type: Number,
+        default: 0
     }
 });
 

@@ -1,0 +1,304 @@
+{
+    "locStAbbrs": [
+        {
+            "location_name": "Birmingham",
+            "location_state_abbr": "AL"
+        },
+        {
+            "location_name": "Little Rock",
+            "location_state_abbr": "AR"
+        },
+        {
+            "location_name": "Phoenix",
+            "location_state_abbr": "AZ"
+        },
+        {
+            "location_name": "Golden Gate",
+            "location_state_abbr": "CA"
+        },
+        {
+            "location_name": "Los Angeles",
+            "location_state_abbr": "CA"
+        },
+        {
+            "location_name": "Sacramento",
+            "location_state_abbr": "CA"
+        },
+        {
+            "location_name": "San Diego",
+            "location_state_abbr": "CA"
+        },
+        {
+            "location_name": "Colorado Springs",
+            "location_state_abbr": "CO"
+        },
+        {
+            "location_name": "Jacksonville",
+            "location_state_abbr": "FL"
+        },
+        {
+            "location_name": "Ocala",
+            "location_state_abbr": "FL"
+        },
+        {
+            "location_name": "Tampa",
+            "location_state_abbr": "FL"
+        },
+        {
+            "location_name": "Sarasota",
+            "location_state_abbr": "FL"
+        },
+        {
+            "location_name": "Atlanta",
+            "location_state_abbr": "GA"
+        },
+        {
+            "location_name": "Des Moines",
+            "location_state_abbr": "IA"
+        },
+        {
+            "location_name": "Indianapolis",
+            "location_state_abbr": "IN"
+        },
+        {
+            "location_name": "Lexington",
+            "location_state_abbr": "KY"
+        },
+        {
+            "location_name": "Shreveport",
+            "location_state_abbr": "LA"
+        },
+        {
+            "location_name": "Boston",
+            "location_state_abbr": "MA"
+        },
+        {
+            "location_name": "Concord",
+            "location_state_abbr": "MA"
+        },
+        {
+            "location_name": "Lansing",
+            "location_state_abbr": "MI"
+        },
+        {
+            "location_name": "Great Lakes",
+            "location_state_abbr": "MI"
+        },
+        {
+            "location_name": "Minneapolis",
+            "location_state_abbr": "MN"
+        },
+        {
+            "location_name": "St. Louis",
+            "location_state_abbr": "MO"
+        },
+        {
+            "location_name": "Kansas City",
+            "location_state_abbr": "MO"
+        },
+        {
+            "location_name": "Charlotte",
+            "location_state_abbr": "NC"
+        },
+        {
+            "location_name": "Raleigh",
+            "location_state_abbr": "NC"
+        },
+        {
+            "location_name": "Fargo",
+            "location_state_abbr": "ND"
+        },
+        {
+            "location_name": "New Jersey",
+            "location_state_abbr": "NJ"
+        },
+        {
+            "location_name": "Las Vegas",
+            "location_state_abbr": "NV"
+        },
+        {
+            "location_name": "Buffalo",
+            "location_state_abbr": "NY"
+        },
+        {
+            "location_name": "Long Island",
+            "location_state_abbr": "NY"
+        },
+        {
+            "location_name": "Syracuse",
+            "location_state_abbr": "NY"
+        },
+        {
+            "location_name": "Cincinnati/Dayton",
+            "location_state_abbr": "OH"
+        },
+        {
+            "location_name": "Cleveland",
+            "location_state_abbr": "OH"
+        },
+        {
+            "location_name": "Tulsa",
+            "location_state_abbr": "OK"
+        },
+        {
+            "location_name": "Mercer",
+            "location_state_abbr": "PA"
+        },
+        {
+            "location_name": "PA",
+            "location_state_abbr": "PA"
+        },
+        {
+            "location_name": "Sioux Falls",
+            "location_state_abbr": "SD"
+        },
+        {
+            "location_name": "Nashville",
+            "location_state_abbr": "TN"
+        },
+        {
+            "location_name": "East Tennessee",
+            "location_state_abbr": "TN"
+        },
+        {
+            "location_name": "Knoxville",
+            "location_state_abbr": "TN"
+        },
+        {
+            "location_name": "Memphis",
+            "location_state_abbr": "TN"
+        },
+        {
+            "location_name": "Dallas",
+            "location_state_abbr": "TX"
+        },
+        {
+            "location_name": "Austin",
+            "location_state_abbr": "TX"
+        },
+        {
+            "location_name": "Houston",
+            "location_state_abbr": "TX"
+        },
+        {
+            "location_name": "San Antonio",
+            "location_state_abbr": "TX"
+        },
+        {
+            "location_name": "Washington DC",
+            "location_state_abbr": "VA"
+        },
+        {
+            "location_name": "Seattle",
+            "location_state_abbr": "WA"
+        },
+        {
+            "location_name": "Wisconsin",
+            "location_state_abbr": "WI"
+        },
+        {
+            "location_name": "National Event",
+            "location_state_abbr": "US"
+        },
+        {
+            "location_name": "Calgary",
+            "location_state_abbr": "AB"
+        },
+        {
+            "location_name": "Edmonton",
+            "location_state_abbr": "AB"
+        },
+        {
+            "location_name": "Vancouver",
+            "location_state_abbr": "BC"
+        },
+        {
+            "location_name": "Winnipeg",
+            "location_state_abbr": "MB"
+        },
+        {
+            "location_name": "Moncton",
+            "location_state_abbr": "NB"
+        },
+        {
+            "location_name": "St. John`s",
+            "location_state_abbr": "NL"
+        },
+        {
+            "location_name": "Halifax",
+            "location_state_abbr": "NS"
+        },
+        {
+            "location_name": "Kitchener",
+            "location_state_abbr": "ON"
+        },
+        {
+            "location_name": "Ottawa",
+            "location_state_abbr": "ON"
+        },
+        {
+            "location_name": "Toronto",
+            "location_state_abbr": "ON"
+        },
+        {
+            "location_name": "Montreal",
+            "location_state_abbr": "QC"
+        },
+        {
+            "location_name": "Quebec City",
+            "location_state_abbr": "QC"
+        },
+        {
+            "location_name": "Saskatoon",
+            "location_state_abbr": "SK"
+        },
+        {
+            "location_name": "Windsor",
+            "location_state_abbr": "ON"
+        },
+        {
+            "location_name": "Pittsburgh",
+            "location_state_abbr": "PA"
+        },
+        {
+            "location_name": "Los Angeles Reverse Auction",
+            "location_state_abbr": "CA"
+        },
+        {
+            "location_name": "Orlando",
+            "location_state_abbr": "FL"
+        },
+        {
+            "location_name": "Reno",
+            "location_state_abbr": "NV"
+        },
+        {
+            "location_name": "Chicago",
+            "location_state_abbr": "IL"
+        },
+        {
+            "location_name": "Fresno",
+            "location_state_abbr": "CA"
+        },
+        {
+            "location_name": "Flint",
+            "location_state_abbr": "MI"
+        },
+        {
+            "location_name": "Portland",
+            "location_state_abbr": "OR"
+        },
+        {
+            "location_name": "Northwest",
+            "location_state_abbr": "OR"
+        },
+        {
+            "location_name": "Boise",
+            "location_state_abbr": "ID"
+        },
+        {
+            "location_name": "Brashers",
+            "location_state_abbr": "CA"
+        }
+    ]
+}

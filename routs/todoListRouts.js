@@ -10,7 +10,7 @@ module.exports = function (app) {
         .post(authController.verify_token, todoList.create_a_task);
 
     app.route('/tasks/:taskId')
-        .get(todoList.read_a_task)
+        .get(authController.verify_token, todoList.read_a_task)
         .put(todoList.update_a_task)
         .delete(todoList.delete_a_task);
 
@@ -19,5 +19,23 @@ module.exports = function (app) {
 
     app.route('/auth/sign_in')
         .post(userHandlers.sign_in);
+
+    app.route('/configlist/getConfiglist')
+        .get(authController.getConfiglist);
+
+    app.route('/configlist/getWsConfiglist')
+        .get(authController.getWsconfiglist);
+
+    app.route('/lotlist')
+        .get(authController.getLotlist);
+
+    app.route('/gethtml')
+        .get(authController.getHtml);
+
+    app.route('/getRegionConfig')
+        .get(authController.getRegionConfig);
+    
+    app.route('/getAnnouncement')
+        .get(authController.getAnnouncement);
 
 }

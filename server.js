@@ -2,12 +2,15 @@
 
 var express = require('express'),
     app = express(),
-    port = process.env.PORT || 3000,
+    port = process.env.PORT || 4000,
     mongoose = require('mongoose'),
     Task = require('./modul/todoListModel'),
     User = require('./modul/userModle'),
+    Configlist = require('./modul/configlistModel'),
     bodyParser = require('body-parser');
+var cors = require('cors');
 
+app.use(cors());
 mongoose.Promise = global.Promise;
 mongoose.connect('mongodb://localhost/Tododb');
 
