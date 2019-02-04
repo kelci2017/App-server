@@ -5,5 +5,8 @@ module.exports = function (app) {
         authController = require('../auth/auth_controller');
 
     app.route('/getJsonObj')
-        .get(authController.verify_token, appController.get_json_obj)
+        .get(authController.verify_token, appController.get_json_obj);
+
+    app.route('/getJson')
+        .get(appController.get_json_obj)
 }

@@ -1,5 +1,6 @@
 'use strict';
 
 exports.get_json_obj = function (req, res) {
-    res(jsonObj);
+    var jsonObj = require('../json_objs/jsonObj');
+    res.json(jsonObj);
 };
