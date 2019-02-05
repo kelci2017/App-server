@@ -2,11 +2,8 @@
 
 exports.verify_token = function (req, res, next) {
     var request = require('request'),
-        token = req.headers['authorization'];
-
-    var dateTime = require('node-datetime');
-    var dt = dateTime.create();
-    dt.format('m/d/Y H:M:S');
+        token = req.headers['authorization'],
+        auth_config = require('./auth_config');
 
     request({
         url: "http://localhost:8080/auth/verifyToken",
@@ -19,13 +16,42 @@ exports.verify_token = function (req, res, next) {
         if (error) return error;
         if (!body) return res.status(401).send();
         if (body.resultCode != 0) {
-            console.log('body resultCode is: ', body.resultCode + ' ' + new Date(dt.now()));
+            console.log('body resultCode is: ', body.resultCode);
             return res.send(body);
         }
         if (body.resultCode == 0) {
-            console.log('body resultDesc is: ', body.resultDesc + ' ' + new Date(dt.now()));
+            console.log('body resultDesc is: ', body.resultDesc);
             next();
         }
 
     });
 };
+
+// exports.get_token = function (req, res) {
+//     var request = require('request'),
+
+//     var dateTime = require('node-datetime');
+//     var dt = dateTime.create();
+//     dt.format('m/d/Y H:M:S');
+
+//     request({
+//         url: "http://localhost:8080/auth/getToken",
+//         method: "GET",
+//         headers: {
+//             "requestkey": jwt.sign({ email: user.email }, auth_config.key),
+//             "applicationid":1987
+//         },
+//         json: true
+//     }, function (error, response, body) {
+//         if (error) return error;
+//         if (!body) return res.status(401).send();
+//         if (body.resultCode != 0) {
+//             console.log('body resultCode is: ', body.resultCode + ' ' + new Date(dt.now()));
+//             return res.send(body);
+//         }
+//         if (body.resultCode == 0) {
+//             console.log('body resultDesc is: ', body.resultDesc + ' ' + new Date(dt.now()));
+//         }
+
+//     });
+// };

@@ -3,10 +3,15 @@
 var express = require('express'),
     app = express(),
     port = process.env.PORT || 4000,
-    bodyParser = require('body-parser');
+    bodyParser = require('body-parser'),
+    Note = require('./models/noteModel'),
+    User = require('./models/userModel'),
+    mongoose = require('mongoose');
 var cors = require('cors');
 
 app.use(cors());
+mongoose.Promise = global.Promise;
+mongoose.connect('mongodb://localhost/Notedb', { useNewUrlParser: true });
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
