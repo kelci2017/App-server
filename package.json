@@ -1,13 +1,10 @@
 {
-  "name": "com.jandj.oam",
   "version": "1.0.0",
-  "description": "JandJ OAM",
   "main": "index.js",
   "scripts": {
     "start": "nodemon server.js"
   },
-  "proxy": "http://olive.jandjzone.com/rest/system",
-  "author": "Jason",
+  "author": "Kelci",
   "license": "ISC",
   "dependencies": {
     "bcrypt": "^3.0.0",
