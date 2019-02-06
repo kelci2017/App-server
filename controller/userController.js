@@ -5,15 +5,28 @@ var mongose = require('mongoose'),
     bcrypt = require("bcrypt"),
     User = mongose.model('User');
     auth_config = require('../auth/auth_config'),
-    authController = require('../auth/auth_controller');
+    authController = require('../auth/auth_controller'),
+    UserSession = mongose.model('UserSession'),
+    constants = require('../objs/constants'),
+    UUID = require('uuid'),
+    BaseResult = require('../objs/BaseResult');
+
+var TokenSessionResult = require('../objs/TokenSessionResult');
 
 
 
 exports.register = function (req, res) {
+    User.findOne({
+        email: req.body.email
+    }, function (err, user) {
+        if (user) return res.json(constants.RESULT_USER_EXISTED);
+    });
     var newUser = new User(req.body);
     newUser.hash_password = bcrypt.hashSync(req.body.password, 10);
+    var uuid4 = UUID.v4('String');
+    newUser.userID = uuid4.toString();
     newUser.save(function (err, user) {
-        if (err) return res.send(constants.RESULT_UNKNOWN);
+        if (err) return res.json(constants.RESULT_UNKNOWN);
         if (user == null) return res.json(constants.RESULT_NOTE_NULL);
         return res.json(new BaseResult(97, user));
     });
@@ -25,7 +38,7 @@ exports.sign_in = function (req, res) {
         email: req.body.email
     }, function (err, user) {
         if (user) console.log("user name found is: " + user.userName);
-        if (err) throw err;
+        if (err) return res.json(constants.RESULT_UNKNOWN);
         if (!user) {
             return res.json(constants.RESULT_USER_NOTFOUND);
         } else if (user) {
@@ -42,15 +55,23 @@ exports.sign_in = function (req, res) {
                             },
                             json: true
                         }, function (error, response, body) {
-                            if (error) return error;
-                            if (!body) return res.status(401).send();
+                            if (error) return res.json(constants.RESULT_UNKNOWN);
+                            if (!body) return res.json(constants.RESULT_ACCESS_DENIED);
                             if (body.resultCode != 0) {
                                 console.log('body resultCode is: ', body.resultCode );
-                                return res.send(body);
+                                return res.json(body);
                             }
                             if (body.resultCode == 0) {
-                                return res.send(body);
+                                var sessionID = UUID.v4('String');
+                                var userID = req.body.userid
+                                var new_session = new UserSession({timeStamp: new Date(), sessionID: sessionID, userI: userID,});
+                                
+                                new_session.save(function (err, session) {
+                                    if (err) return res.json(constants.RESULT_UNKNOWN);
+                                });
+                                return res.json(new TokenSessionResult(body.resultCode, body.resultDesc, body.token, sessionID));
                                 console.log('body resultDesc is: ', body.resultDesc);
+                                
                             }
     
                         });
@@ -62,10 +83,42 @@ exports.sign_in = function (req, res) {
                     });
 };
 
+
+exports.sign_out = function (req, res) {
+    UserSession.findOne({
+        sessionID: req.query.sessionid,
+    }, function (err, session) {       
+        if (err) return res.json(constants.RESULT_UNKNOWN);
+        if (session) {
+            UserSession.remove({
+                sessionID: req.query.sessionid
+            }, function (err, session) {
+                if (err) return res.json(constants.RESULT_UNKNOWN);
+            });
+        }
+                    });
+};
+
 exports.loginRequired = function (req, res, next) {
     if (req.user) {
         next();
     } else {
         return res.status(401).json({ message: 'Unauthorized user!' })
     }
+};
+
+exports.deregister = function (req, res) {
+    User.findOne({
+        userName: req.params.userName,
+    }, function (err, user) {
+        if (user) {
+            User.remove({
+                userName: user.userName,
+                email: user.email,
+            }, function (err, task) {
+                if (err) return res.json(constants.RESULT_UNKNOWN);
+                return res.json({ message: 'User successfully deleted' });
+            });
+        }
+    });
 };

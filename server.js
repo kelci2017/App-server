@@ -6,6 +6,7 @@ var express = require('express'),
     bodyParser = require('body-parser'),
     Note = require('./models/noteModel'),
     User = require('./models/userModel'),
+    UserSession = require('./models/userSessionModel'),
     mongoose = require('mongoose');
 var cors = require('cors');
 

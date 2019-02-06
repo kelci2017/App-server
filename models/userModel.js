@@ -20,6 +20,10 @@ var UserSchema = new Schema({
         trim: true,
         required: true
     },
+    userID: {
+        type: String,
+        unique: true
+    },
     hash_password: {
         type: String,
         required: true

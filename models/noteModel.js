@@ -14,8 +14,7 @@ var NoteSchema = new Schema({
     },
     toWhom: {
         type: String,
-        trim: true,
-        required: true
+        trim: true
     },
     noteBody: {
         type: String,
@@ -24,7 +23,11 @@ var NoteSchema = new Schema({
     created: {
         type: Date,
         default: Date.now
-    }
+    },
+    userID: {
+        type: String,
+        required: true
+    },
 });
 
 

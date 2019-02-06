@@ -11,6 +11,9 @@ module.exports = function (app) {
     app.route('/notes/from/:fromWhom')
         .get(noteController.list_notes_by_fromWhom);
 
+    app.route('/notes/search/:keywords')
+        .get(noteController.read_notes_by_keywords);
+
     app.route('/notes/date/:date')
         .get(noteController.list_notes_by_date);
 
@@ -20,7 +23,14 @@ module.exports = function (app) {
    app.route('/auth/sign_in')
         .post(userController.sign_in);
 
+   app.route('/auth/sign_out')
+        .post(userController.sign_out);
+   
    app.route('/auth/register')
         .post(userController.register);
+
+   app.route('/auth/deregister/:userName')
+        .delete(userController.deregister);
+    
 
 }
