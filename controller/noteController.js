@@ -37,7 +37,7 @@ exports.list_notes_by_date = function (req, res) {
     Note.find({ created: req.params.date, userID: userID }, function (err, note) {
         if (err) return res.json(constants.RESULT_UNKNOWN);
         if (note == null) return res.json(constants.RESULT_NULL);
-        return res.json(new BaseResult(97, note));
+        return res.json(new BaseResult(0, note));
     });
 };
 
@@ -45,7 +45,7 @@ exports.list_notes_by_toWhom = function (req, res) {
     Note.find({ toWhom: req.params.toWhom, userID: userID }, function (err, note) {
         if (err) return res.json(constants.RESULT_UNKNOWN);
         if (note == null) return res.json(constants.RESULT_NULL);
-        return res.json(new BaseResult(97, note));
+        return res.json(new BaseResult(0, note));
     });
 };
 
@@ -53,7 +53,7 @@ exports.list_notes_by_fromWhom = function (req, res) {
     Note.find({fromWhom: req.params.fromWhom, userID: userID}, function (err, note) {
         if (err) return res.json(constants.RESULT_UNKNOWN);
         if (note == null) return res.json(constants.RESULT_NULL);
-        return res.json(new BaseResult(97, note));
+        return res.json(new BaseResult(0, note));
     });
 };
 
@@ -65,7 +65,7 @@ exports.create_a_note = function (req, res) {
             return res.json(constants.RESULT_UNKNOWN);
         }
         if (note == null) return res.json(constants.RESULT_NULL);
-        return res.json(new BaseResult(97, note));
+        return res.json(new BaseResult(0, note));
     });
 };
 
@@ -80,7 +80,7 @@ exports.read_notes_by_keywords = function (req, res) {
         if (note == null) {
             return res.json(constants.RESULT_NULL);
         }
-        return res.json(new BaseResult(97, note));
+        return res.json(new BaseResult(0, note));
     });
    
 };

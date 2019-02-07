@@ -23,6 +23,9 @@ module.exports = function (app) {
    app.route('/auth/sign_in')
         .post(userController.sign_in);
 
+   app.route('/auth/sessionCheck')
+        .get(noteController.validSession, userController.sessionCheck);
+
    app.route('/auth/sign_out')
         .get(noteController.validSession, userController.sign_out);
    

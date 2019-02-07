@@ -123,3 +123,7 @@ exports.deregister = function (req, res) {
         }
     });
 };
+
+exports.sessionCheck = function (req, res) {
+    return res.json(constants.RESULT_SUCCESS);
+}
