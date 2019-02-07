@@ -6,7 +6,7 @@ var mongose = require('mongoose'),
     User = mongose.model('User');
     auth_config = require('../auth/auth_config'),
     authController = require('../auth/auth_controller'),
-    UserSession = mongose.model('UserSession'),
+    UserSession = mongose.model('UserSessionModel'),
     constants = require('../objs/constants'),
     UUID = require('uuid'),
     BaseResult = require('../objs/BaseResult');
@@ -42,6 +42,8 @@ exports.sign_in = function (req, res) {
         if (!user) {
             return res.json(constants.RESULT_USER_NOTFOUND);
         } else if (user) {
+            var userID = req.body.userID;
+            console.log("the useris from body is: " + req.body.userid);
             if(bcrypt.compareSync(req.body.password, user.hash_password)) {
                 console.log("logged in here");           
                     var request = require('request');
@@ -63,14 +65,17 @@ exports.sign_in = function (req, res) {
                             }
                             if (body.resultCode == 0) {
                                 var sessionID = UUID.v4('String');
-                                var userID = req.body.userid
-                                var new_session = new UserSession({timeStamp: new Date(), sessionID: sessionID, userI: userID,});
+                                
+                                var new_session = new UserSession({timeStamp: new Date(), sessionID: sessionID, userID: userID,});
                                 
                                 new_session.save(function (err, session) {
-                                    if (err) return res.json(constants.RESULT_UNKNOWN);
+                                    if (err) {
+                                        console.log("there is error when save");
+                                        return res.json(constants.RESULT_UNKNOWN);
+                                    }
+                                    return res.json(new TokenSessionResult(body.resultCode, body.resultDesc, body.token, sessionID));
                                 });
-                                return res.json(new TokenSessionResult(body.resultCode, body.resultDesc, body.token, sessionID));
-                                console.log('body resultDesc is: ', body.resultDesc);
+                                
                                 
                             }
     

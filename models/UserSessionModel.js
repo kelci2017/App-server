@@ -19,9 +19,8 @@ var UserSessionSchema = new Schema({
     },
     userID: {
         type: String,
-        unique: true
     },
 });
 
 
-module.exports = mongoose.model('UserSession', UserSessionSchema);
+module.exports = mongoose.model('UserSessionModel', UserSessionSchema);

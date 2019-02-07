@@ -26,7 +26,6 @@ var MessageSchema = new Schema({
     },
     userID: {
         type: String,
-        required: true
     },
 });
 

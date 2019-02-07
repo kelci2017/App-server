@@ -2,7 +2,7 @@
 
 var mongoose = require('mongoose'),
     Note = mongoose.model('Message'),
-    UserSession = mongoose.model('UserSession'),
+    UserSession = mongoose.model('UserSessionModel'),
     constants = require('../objs/constants'),
     BaseResult = require('../objs/BaseResult');
 var userID;
@@ -15,9 +15,10 @@ exports.validSession = function(req, res, next){
             return res.json(constants.RESULT_NULL);
         }
         if (Math.abs(new Date() - session.timeStamp) / 86400000 <= 2) {
-            userID = session.userID;
             UserSession.findOneAndUpdate({ sessionID: req.query.sessionid }, { timeStamp: new Date() }, { new: true }, function (err, sesion) {
                 if (err) return res.json(constants.RESULT_UNKNOWN);
+                userID = sesion.userID;
+                console.log("the userID at the validsession is: " + userID); 
                 next();
             });
             
@@ -33,7 +34,7 @@ exports.validSession = function(req, res, next){
 }
 
 exports.list_notes_by_date = function (req, res) {
-    Note.find({ created: req.params.date }, function (err, note) {
+    Note.find({ created: req.params.date, userID: userID }, function (err, note) {
         if (err) return res.json(constants.RESULT_UNKNOWN);
         if (note == null) return res.json(constants.RESULT_NULL);
         return res.json(new BaseResult(97, note));
@@ -41,7 +42,7 @@ exports.list_notes_by_date = function (req, res) {
 };
 
 exports.list_notes_by_toWhom = function (req, res) {
-    Note.find({ toWhom: req.params.toWhom }, function (err, note) {
+    Note.find({ toWhom: req.params.toWhom, userID: userID }, function (err, note) {
         if (err) return res.json(constants.RESULT_UNKNOWN);
         if (note == null) return res.json(constants.RESULT_NULL);
         return res.json(new BaseResult(97, note));
@@ -49,7 +50,7 @@ exports.list_notes_by_toWhom = function (req, res) {
 };
 
 exports.list_notes_by_fromWhom = function (req, res) {
-    Note.find({fromWhom: req.params.fromWhom}, function (err, note) {
+    Note.find({fromWhom: req.params.fromWhom, userID: userID}, function (err, note) {
         if (err) return res.json(constants.RESULT_UNKNOWN);
         if (note == null) return res.json(constants.RESULT_NULL);
         return res.json(new BaseResult(97, note));
@@ -69,13 +70,18 @@ exports.create_a_note = function (req, res) {
 };
 
 exports.read_notes_by_keywords = function (req, res) {
-    Note.find({ noteBody: req.params.keywords, userID: userID }, function (err, note) {
-        if (err) return res.send(constants.RESULT_UNKNOWN);
+    var keyword = req.params.keywords;
+    var regex = RegExp(".*" + keyword + ".*");
+    Note.find({noteBody: regex, userID: userID}, function (err, note) {
+        console.log("the userid is: " + userID);
+        if (err) {
+            return res.send(constants.RESULT_UNKNOWN);
+        }
         if (note == null) {
-            console.log("aaaaaaaaaaaaaa");
             return res.json(constants.RESULT_NULL);
         }
         return res.json(new BaseResult(97, note));
     });
+   
 };
 
