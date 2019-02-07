@@ -1,7 +1,7 @@
 'use strict';
 
 var mongoose = require('mongoose'),
-    Note = mongoose.model('Note'),
+    Note = mongoose.model('Message'),
     UserSession = mongoose.model('UserSession'),
     constants = require('../objs/constants'),
     BaseResult = require('../objs/BaseResult');
@@ -33,7 +33,6 @@ exports.validSession = function(req, res, next){
 }
 
 exports.list_notes_by_date = function (req, res) {
-    console.log("the date is: " + req.params.date);
     Note.find({ created: req.params.date }, function (err, note) {
         if (err) return res.json(constants.RESULT_UNKNOWN);
         if (note == null) return res.json(constants.RESULT_NULL);
@@ -59,9 +58,11 @@ exports.list_notes_by_fromWhom = function (req, res) {
 
 exports.create_a_note = function (req, res) {
     var new_note = new Note(req.body);
-    console.log('RESTful API server started on: ' + req.body);
     new_note.save(function (err, note) {
-        if (err) return res.json(constants.RESULT_UNKNOWN);
+        if (err) {
+            console.log("save error save error");
+            return res.json(constants.RESULT_UNKNOWN);
+        }
         if (note == null) return res.json(constants.RESULT_NULL);
         return res.json(new BaseResult(97, note));
     });
