@@ -85,18 +85,14 @@ exports.sign_in = function (req, res) {
 
 
 exports.sign_out = function (req, res) {
-    UserSession.findOne({
-        sessionID: req.query.sessionid,
-    }, function (err, session) {       
-        if (err) return res.json(constants.RESULT_UNKNOWN);
-        if (session) {
+   
             UserSession.remove({
                 sessionID: req.query.sessionid
             }, function (err, session) {
                 if (err) return res.json(constants.RESULT_UNKNOWN);
+                return res.json(constants.RESULT_SUCCESS);
             });
-        }
-                    });
+        
 };
 
 exports.loginRequired = function (req, res, next) {
