@@ -34,7 +34,6 @@ exports.register = function (req, res) {
 
 exports.sign_in = function (req, res) {
     User.findOne({
-        userName: req.body.userName,
         email: req.body.email
     }, function (err, user) {
         if (user) console.log("user name found is: " + user.userName);
