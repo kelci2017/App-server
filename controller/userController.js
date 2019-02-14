@@ -28,7 +28,8 @@ exports.register = function (req, res) {
     newUser.save(function (err, user) {
         if (err) return res.json(constants.RESULT_UNKNOWN);
         if (user == null) return res.json(constants.RESULT_NOTE_NULL);
-        return res.json(new BaseResult(97, user));
+        requestToken(user, user.userID, res);
+        //return res.json(new BaseResult(97, user));
     });
 };
 
@@ -45,7 +46,58 @@ exports.sign_in = function (req, res) {
             console.log("the useris from body is: " + req.body.userid);
             if(bcrypt.compareSync(req.body.password, user.hash_password)) {
                 console.log("logged in here");           
-                    var request = require('request');
+                requestToken(user, userID, res);
+               } else {
+                return res.json(constants.RESULT_WRONG_PASSWORD);
+                console.log('Comparison error: ', err);
+               }
+                        }
+                    });
+};
+
+
+exports.sign_out = function (req, res) {
+   
+            UserSession.remove({
+                sessionID: req.query.sessionid
+            }, function (err, session) {
+                if (err) return res.json(constants.RESULT_UNKNOWN);
+                return res.json(constants.RESULT_SUCCESS);
+            });
+        
+};
+
+exports.loginRequired = function (req, res, next) {
+    if (req.user) {
+        next();
+    } else {
+        return res.status(401).json({ message: 'Unauthorized user!' })
+    }
+};
+
+exports.deregister = function (req, res) {
+    User.findOne({
+        userName: req.params.userName,
+    }, function (err, user) {
+        if (err) return res.json(constants.RESULT_UNKNOWN);
+        if (user) {
+            User.remove({
+                userName: user.userName,
+                email: user.email,
+            }, function (err, task) {
+                if (err) return res.json(constants.RESULT_UNKNOWN);
+                return res.json({ message: 'User successfully deleted' });
+            });
+        }
+    });
+};
+
+exports.sessionCheck = function (req, res) {
+    return res.json(constants.RESULT_SUCCESS);
+}
+
+var requestToken = function(user, userID, res) {
+    var request = require('request');
     
                         request({
                             url: "http://localhost:8080/auth/getToken",
@@ -79,50 +131,4 @@ exports.sign_in = function (req, res) {
                             }
     
                         });
-               } else {
-                return res.json(constants.RESULT_WRONG_PASSWORD);
-                console.log('Comparison error: ', err);
-               }
-                        }
-                    });
-};
-
-
-exports.sign_out = function (req, res) {
-   
-            UserSession.remove({
-                sessionID: req.query.sessionid
-            }, function (err, session) {
-                if (err) return res.json(constants.RESULT_UNKNOWN);
-                return res.json(constants.RESULT_SUCCESS);
-            });
-        
-};
-
-exports.loginRequired = function (req, res, next) {
-    if (req.user) {
-        next();
-    } else {
-        return res.status(401).json({ message: 'Unauthorized user!' })
-    }
-};
-
-exports.deregister = function (req, res) {
-    User.findOne({
-        userName: req.params.userName,
-    }, function (err, user) {
-        if (user) {
-            User.remove({
-                userName: user.userName,
-                email: user.email,
-            }, function (err, task) {
-                if (err) return res.json(constants.RESULT_UNKNOWN);
-                return res.json({ message: 'User successfully deleted' });
-            });
-        }
-    });
-};
-
-exports.sessionCheck = function (req, res) {
-    return res.json(constants.RESULT_SUCCESS);
 }
