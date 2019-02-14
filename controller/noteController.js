@@ -122,7 +122,7 @@ exports.create_a_note = function (req, res) {
             return res.json(constants.RESULT_UNKNOWN);
         }
         if (note == null) return res.json(constants.RESULT_NULL);
-        return res.json(new BaseResult(0, note));
+        return res.json(constants.RESULT_SUCCESS);
     });
 };
 
