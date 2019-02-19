@@ -19,17 +19,19 @@ exports.register = function (req, res) {
     User.findOne({
         email: req.body.email
     }, function (err, user) {
+        if (err) return res.json(constants.RESULT_UNKNOWN);
         if (user) return res.json(constants.RESULT_USER_EXISTED);
-    });
-    var newUser = new User(req.body);
-    newUser.hash_password = bcrypt.hashSync(req.body.password, 10);
-    var uuid4 = UUID.v4('String');
-    newUser.userID = uuid4.toString();
-    newUser.save(function (err, user) {
+        console.log("the request body is: " + req.body.toString());
+        var newUser = new User(req.body);
+        newUser.hash_password = bcrypt.hashSync(req.body.password, 10);
+        var uuid4 = UUID.v4('String');
+        newUser.userID = uuid4.toString();
+        newUser.save(function (err, user) {
         if (err) return res.json(constants.RESULT_UNKNOWN);
         if (user == null) return res.json(constants.RESULT_NOTE_NULL);
         requestToken(user, user.userID, res);
         //return res.json(new BaseResult(97, user));
+    });
     });
 };
 
@@ -42,7 +44,7 @@ exports.sign_in = function (req, res) {
         if (!user) {
             return res.json(constants.RESULT_USER_NOTFOUND);
         } else if (user) {
-            var userID = req.body.userID;
+            var userID = user.userID;
             console.log("the useris from body is: " + req.body.userid);
             if(bcrypt.compareSync(req.body.password, user.hash_password)) {
                 console.log("logged in here");           
@@ -124,7 +126,7 @@ var requestToken = function(user, userID, res) {
                                         console.log("there is error when save");
                                         return res.json(constants.RESULT_UNKNOWN);
                                     }
-                                    return res.json(new TokenSessionResult(body.resultCode, body.resultDesc, body.token, sessionID));
+                                    return res.json(new TokenSessionResult(body.resultCode, body.resultDesc, userID, body.token, sessionID));
                                 });
                                 
                                 
