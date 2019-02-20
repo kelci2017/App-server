@@ -10,7 +10,7 @@ var userID;
 exports.validSession = function(req, res, next){
 
     UserSession.findOne({ sessionID: req.query.sessionid }, function (err, session) {
-        console.log("the sessionid is at the validate session: " + req.query.sessionid)
+        console.log("the sessionid is at the validate session: " + session.sessionID)
         if (err) return res.json(constants.RESULT_UNKNOWN);
         if (session == null) {
             console.log("session is null at the validate session");
@@ -92,22 +92,36 @@ var list_notes_by_fromToDate = function (req, res) {
 };
 
 exports.list_notes_by_search = function (req, res) {
+    var from = req.query.from;
+    var to = req.query.to;
+    var date = req.query.date;
+
+    if (from == "All") {
+        from = "";
+    }
+
+    if (to == "All") {
+        to = "";
+    }
     
-    if (req.query.from && !req.query.to && !req.query.date) {
+    if (date == "today") {
+        date = Date().toString();
+    }
+    if (from && !to && !date) {
         list_notes_by_fromWhom(req, res);
-    } else if (!req.query.from && req.query.to && !req.query.date) {
+    } else if (!from && to && !date) {
         list_notes_by_toWhom(req, res);
-    } else if (!req.query.from && !req.query.to && req.query.date) {
+    } else if (!from && !to && date) {
         list_notes_by_date(req, res);
-    } else if (req.query.from && req.query.to && !req.query.date) {
+    } else if (from && to && !date) {
         list_notes_by_fromTo(req, res);
-    } else if (req.query.from && !req.query.to && req.query.date) {
+    } else if (from && !to && date) {
         console.log("from date");
         list_notes_by_fromDate(req, res);
-    } else if (!req.query.from && req.query.to && req.query.date) {
+    } else if (!from && to && date) {
         console.log("to date");
         list_notes_by_toDate(req, res);
-    } else if (req.query.from && req.query.to && req.query.date) {
+    } else if (from && to && date) {
         console.log("from date to")
         list_notes_by_fromToDate(req, res);
     }
@@ -118,7 +132,7 @@ exports.create_a_note = function (req, res) {
     var new_note = new Note(req.body);
     new_note.save(function (err, note) {
         if (err) {
-            console.log("save error save error");
+            console.log("save error save error vvvvvvvvv");
             return res.json(constants.RESULT_UNKNOWN);
         }
         if (note == null) return res.json(constants.RESULT_NULL);
