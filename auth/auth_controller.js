@@ -1,4 +1,6 @@
 'use strict';
+var mongoose = require('mongoose'),
+    jwt = require('jsonwebtoken');  
 
 exports.verify_token = function (req, res, next) {
     var request = require('request'),
@@ -16,7 +18,7 @@ exports.verify_token = function (req, res, next) {
         if (error) return res.json(constants.RESULT_UNKNOWN);
         if (!body) return res.status(401).send();
         if (body.resultCode != 0) {
-            console.log('body resultCode is: ', body.resultCode);
+            console.log('body resultCode is at the verify token: ', body.resultCode);
             return res.send(body);
         }
         if (body.resultCode == 0) {
@@ -29,7 +31,7 @@ exports.verify_token = function (req, res, next) {
 
 exports.getToken = function(req, res) {
     var UserSession = mongoose.model('UserSessionModel'),
-        User = mongose.model('User'),
+        User = mongoose.model('User'),
         TokenResult = require('../objs/TokenResult'),
         auth_config = require('./auth_config');
         
@@ -42,7 +44,7 @@ exports.getToken = function(req, res) {
             return res.json(constants.RESULT_NULL);
         } 
         User.findOne({
-            userID: sesion.userID
+            userID: session.userID
         }, function (err, user) {
             if (err) return res.json(constants.RESULT_UNKNOWN);
             if (user) {

@@ -7,6 +7,7 @@ var express = require('express'),
     Note = require('./models/messageModel'),
     User = require('./models/userModel'),
     UserSession = require('./models/userSessionModel'),
+    UserFamilyMembers = require('./models/UserFamilyMembersModel'),
     mongoose = require('mongoose');
 var cors = require('cors');
 

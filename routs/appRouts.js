@@ -32,7 +32,8 @@ module.exports = function (app) {
    app.route('/auth/getToken')
         .get(authController.getToken);
 
-   app.route('/auth/getPassword')
-        .post(userController.send_password);
-    
+   app.route('/auth/familyMembers')
+        .post(authController.verify_token, noteController.validSession, userController.postFamilyMembers)
+        .get(authController.verify_token, userController.getFamilyMembers);
+     
 }

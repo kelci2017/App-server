@@ -134,40 +134,66 @@ var requestToken = function(user, userID, res) {
     });   
                         
 }
-
-exports.send_password = function (req, res) {
-    User.findOne({
-        email: req.body.email
-    }, function (err, user) {
+  
+  exports.postFamilyMembers = function(req, res) {
+    var UserFamilyMembers = mongose.model('UserFamilyMembers'),
+        UserSession = mongose.model('UserSessionModel');
+        console.log("post post post -----------------" + req.body.familyMembers);
+        
+    UserSession.findOne({ sessionID: req.query.sessionid }, function (err, session) {
         if (err) return res.json(constants.RESULT_UNKNOWN);
-        if (!user) {
-            return res.json(constants.RESULT_USER_NOTFOUND);
-        } else {
-            var mailOptions = {
-                from: 'kelci.huang@gmail.com',
-                to: user.email,
-                subject: 'Your password for Family Note',
-                text: user.password
-              };
-            transporter.sendMail(mailOptions, function(error, info){
-                if (error) {
-                    console.log("sssssssssssssssss" + error);
-                    return res.json(constants.RESULT_UNKNOWN);
-                } else {
-                    return res.json(constants.RESULT_success);
-                }
-              });
-                }
-        });
-};
+        if (session == null) {
+            return res.json(constants.RESULT_NULL);
+        } 
+        UserFamilyMembers.findOne({ userID: session.userID }, function (err, familyMembersModel) {
+            if (err) {
+                
+                return res.json(constants.RESULT_UNKNOWN);
+            }
+            if (familyMembersModel == null) {
+                var new_userFamilyMembers = new UserFamilyMembers(req.body);
+                new_userFamilyMembers.save(function (err, familyMembersModel) {
+                    if (err) {                       
+                        return res.json(constants.RESULT_UNKNOWN);
+                    }
+                    if (familyMembersModel == null) return res.json(constants.RESULT_NULL);
+                    console.log("now the family members has been saved");
+                    //return res.json(new BaseResult(0, familyMembersModel.familyMembers));
+                    return res.json(constants.RESULT_SUCCESS);
+                });
+            } else {
+                UserFamilyMembers.findOneAndUpdate({ userID: session.userID }, { familyMembers: req.body.familyMembers }, { new: true }, function (err, familyMembers) {
+                    if (err) {
+                        console.log("error error");
+                        return res.json(constants.RESULT_UNKNOWN);
+                    }
+                    return res.json(constants.RESULT_SUCCESS);
+                });
+            }
+        }); 
+            
+    });   
+                        
+} 
 
-var transporter = nodemailer.createTransport({
-    service: 'gmail',
-    auth: {
-      user: 'kelci.huang@gmail.com',
-      pass: ''
-    }
-  });
-  
-  
+exports.getFamilyMembers = function(req, res) {
+    var UserFamilyMembers = mongose.model('UserFamilyMembers'),
+        UserSession = mongose.model('UserSessionModel');
+
+        console.log("get get .................")
+        
+    UserSession.findOne({ sessionID: req.query.sessionid }, function (err, session) {
+        if (err) return res.json(constants.RESULT_UNKNOWN);
+        if (session == null) {
+            return res.json(constants.RESULT_NULL);
+        } 
+        UserFamilyMembers.findOne({ userID: session.userID }, function (err, userFamilyMembers) {
+            if (err) return res.json(constants.RESULT_UNKNOWN);
+            if (userFamilyMembers == null) return res.json(constants.RESULT_NULL);
+            console.log("The family members got from databse is; " + userFamilyMembers.familyMembers);
+            return res.json(new BaseResult(0, userFamilyMembers.familyMembers));
+        });    
+    });  
+                        
+} 
   
