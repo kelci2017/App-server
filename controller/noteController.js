@@ -143,7 +143,8 @@ exports.create_a_note = function (req, res) {
 
 exports.read_notes_by_keywords = function (req, res) {
     var keyword = req.params.keywords;
-    var regex = RegExp(".*" + keyword + ".*");
+    //var regex = RegExp(".*" + keyword + ".*");
+    var regex = new RegExp(keyword, "i")
     Note.find({noteBody: regex, userID: userID}, function (err, note) {
         console.log("the userid is: " + userID);
         if (err) {
