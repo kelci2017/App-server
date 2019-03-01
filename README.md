@@ -19,3 +19,4 @@ If you would like to download the code and try it for yourself:
 
 * Install packages: npm install
 * Launch: npm start
+* Pls use the restclient with http://localhost:4000/ and the routes in appRouts.js with token in the header and append the sessionid in the url (the sessionid can be fetched with http://localhost:4000/auth/register)
