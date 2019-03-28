@@ -11,14 +11,20 @@ exports.validSession = function(req, res, next){
 
     UserSession.findOne({ sessionID: req.query.sessionid }, function (err, session) {
         console.log("the sessionid is at the validate session: " + session.sessionID)
-        if (err) return res.json(constants.RESULT_UNKNOWN);
+        if (err) {
+            console.log("validateSession unknow error 1")
+            return res.json(constants.RESULT_UNKNOWN);
+        }
         if (session == null) {
             console.log("session is null at the validate session");
             return res.json(constants.RESULT_NULL);
         }
         if (Math.abs(new Date() - session.timeStamp) / 86400000 <= 2) {
             UserSession.findOneAndUpdate({ sessionID: req.query.sessionid }, { timeStamp: new Date() }, { new: true }, function (err, sesion) {
-                if (err) return res.json(constants.RESULT_UNKNOWN);
+                if (err) {
+                    console.log("validateSession unknow error 2")
+                    return res.json(constants.RESULT_UNKNOWN);
+                }
                 userID = sesion.userID;
                 console.log("the userID at the validsession is: " + userID); 
                 next();
@@ -28,7 +34,10 @@ exports.validSession = function(req, res, next){
             UserSession.remove({
                 sessionID: req.query.sessionid
             }, function (err, session) {
-                if (err) return res.json(constants.RESULT_UNKNOWN);
+                if (err) {
+                    console.log("validateSession unknow error 3")
+                    return res.json(constants.RESULT_UNKNOWN);
+                }
             });
             return res.json(constants.RESULT_TIMEOUT);
         }      
@@ -37,7 +46,10 @@ exports.validSession = function(req, res, next){
 
 var list_notes_by_date = function (req, res) {
     Note.find({ created: req.query.date, userID: userID }, function (err, note) {
-        if (err) return res.json(constants.RESULT_UNKNOWN);
+        if (err) {
+            console.log("list_notes_by_date unknow error 1")
+            return res.json(constants.RESULT_UNKNOWN);
+        } 
         if (note == null) return res.json(constants.RESULT_NULL);
         return res.json(new BaseResult(0, note));
     });
@@ -45,7 +57,10 @@ var list_notes_by_date = function (req, res) {
 
 var list_notes_by_toWhom = function (req, res) {
     Note.find({ toWhom: req.query.to, userID: userID }, function (err, note) {
-        if (err) return res.json(constants.RESULT_UNKNOWN);
+        if (err) {
+            console.log("list_notes_by_toWhom unknow error 1")
+            return res.json(constants.RESULT_UNKNOWN);
+        }
         if (note == null) return res.json(constants.RESULT_NULL);
         return res.json(new BaseResult(0, note));
     });
@@ -53,7 +68,10 @@ var list_notes_by_toWhom = function (req, res) {
 
 var list_notes_by_fromWhom = function (req, res) {
     Note.find({fromWhom: req.query.from, userID: userID}, function (err, note) {
-        if (err) return res.json(constants.RESULT_UNKNOWN);
+        if (err) {
+            console.log("list_notes_by_fromWhom unknow error 1")
+            return res.json(constants.RESULT_UNKNOWN);
+        }
         if (note == null) return res.json(constants.RESULT_NULL);
         return res.json(new BaseResult(0, note));
     });
@@ -61,7 +79,10 @@ var list_notes_by_fromWhom = function (req, res) {
 
 var list_notes_by_fromTo = function (req, res) {
     Note.find({fromWhom: req.query.from, toWhom: req.query.to, userID: userID}, function (err, note) {
-        if (err) return res.json(constants.RESULT_UNKNOWN);
+        if (err) {
+            console.log("list_notes_by_fromTo unknow error 1")
+            return res.json(constants.RESULT_UNKNOWN);
+        }
         if (note == null) return res.json(constants.RESULT_NULL);
         return res.json(new BaseResult(0, note));
     });
@@ -69,7 +90,10 @@ var list_notes_by_fromTo = function (req, res) {
 
 var list_notes_by_fromDate = function (req, res) {
     Note.find({fromWhom: req.query.from, created: req.query.date, userID: userID}, function (err, note) {
-        if (err) return res.json(constants.RESULT_UNKNOWN);
+        if (err) {
+            console.log("list_notes_by_fromDate unknow error 1")
+            return res.json(constants.RESULT_UNKNOWN);
+        }
         if (note == null) return res.json(constants.RESULT_NULL);
         return res.json(new BaseResult(0, note));
     });
@@ -77,7 +101,10 @@ var list_notes_by_fromDate = function (req, res) {
 
 var list_notes_by_toDate = function (req, res) {
     Note.find({ toWhom: req.query.to, created: req.query.date, userID: userID}, function (err, note) {
-        if (err) return res.json(constants.RESULT_UNKNOWN);
+        if (err) {
+            console.log("list_notes_by_toDate unknow error 1")
+            return res.json(constants.RESULT_UNKNOWN);
+        }
         if (note == null) return res.json(constants.RESULT_NULL);
         return res.json(new BaseResult(0, note));
     });
@@ -85,7 +112,10 @@ var list_notes_by_toDate = function (req, res) {
 
 var list_notes_by_fromToDate = function (req, res) {
     Note.find({fromWhom: req.query.from, toWhom: req.query.to, created: req.query.date, userID: userID}, function (err, note) {
-        if (err) return res.json(constants.RESULT_UNKNOWN);
+        if (err) {
+            console.log("list_notes_by_fromToDate unknow error 1")
+            return res.json(constants.RESULT_UNKNOWN);
+        }
         if (note == null) return res.json(constants.RESULT_NULL);
         return res.json(new BaseResult(0, note));
     });
@@ -104,8 +134,9 @@ exports.list_notes_by_search = function (req, res) {
         to = "";
     }
     
-    if (date == "today") {
+    if (date == "Today") {
         date = Date().toString();
+        console.log("today's date is: " + date);
     }
     if (from && !to && !date) {
         list_notes_by_fromWhom(req, res);

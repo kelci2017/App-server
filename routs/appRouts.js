@@ -29,8 +29,8 @@ module.exports = function (app) {
    app.route('/auth/deregister/:userName')
         .delete(userController.deregister);
 
-//    app.route('/auth/getToken')
-//         .get(authController.getToken);
+   app.route('/auth/getToken')
+        .get(authController.getToken);
 
    app.route('/auth/familyMembers')
         .post(noteController.validSession, authController.verify_token, userController.postFamilyMembers)
@@ -38,5 +38,8 @@ module.exports = function (app) {
 
    app.route('/notes/createWithCron')
         .post(noteController.create_a_note);
+
+    app.route('/auth/familyMembersPost')
+        .post(userController.postFamilyMembers);
      
 }

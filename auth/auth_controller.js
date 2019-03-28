@@ -1,6 +1,7 @@
 'use strict';
 var mongoose = require('mongoose'),
-    jwt = require('jsonwebtoken');  
+    jwt = require('jsonwebtoken'),
+    constants = require('../objs/constants');
 
 exports.verify_token = function (req, res, next) {
     var request = require('request'),
@@ -37,7 +38,7 @@ exports.getToken = function(req, res) {
         
     var request = require('request');
     UserSession.findOne({ sessionID: req.query.sessionid }, function (err, session) {
-        console.log("the sessionid is at the validate session: " + session.sessionID)
+        //console.log("the sessionid is at the validate session: " + session.sessionID)
         if (err) return res.json(constants.RESULT_UNKNOWN);
         if (session == null) {
             console.log("session is null at the validate session");

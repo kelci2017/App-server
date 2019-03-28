@@ -189,7 +189,7 @@ exports.getFamilyMembers = function(req, res) {
         } 
         UserFamilyMembers.findOne({ userID: session.userID }, function (err, userFamilyMembers) {
             if (err) return res.json(constants.RESULT_UNKNOWN);
-            if (userFamilyMembers == null) return res.json(constants.RESULT_NULL);
+            if (userFamilyMembers.familyMembers == null) return res.json(constants.RESULT_NULL);
             console.log("The family members got from databse is; " + userFamilyMembers.familyMembers);
             return res.json(new BaseResult(0, userFamilyMembers.familyMembers));
         });    
