@@ -7,10 +7,10 @@ var mongose = require('mongoose'),
     auth_config = require('../auth/auth_config'),
     authController = require('../auth/auth_controller'),
     UserSession = mongose.model('UserSessionModel'),
+    TokenDeviceModel = mongose.model('TokenDeviceModel'),
     constants = require('../objs/constants'),
     UUID = require('uuid'),
     BaseResult = require('../objs/BaseResult'),
-    nodemailer = require('nodemailer'),
     TokenSessionResult = require('../objs/TokenSessionResult');
 
 
@@ -44,11 +44,11 @@ exports.sign_in = function (req, res) {
         if (!user) {
             return res.json(constants.RESULT_USER_NOTFOUND);
         } else if (user) {
-            var userID = user.userID;
             console.log("the useris from body is: " + req.body.userid);
             if(bcrypt.compareSync(req.body.password, user.hash_password)) {
-                console.log("logged in here");           
-                requestToken(user, userID, res);
+                console.log("logged in here"); 
+                console.log("userid after loggedin is: " + user.userID);          
+                requestToken(user, user.userID, res);
                } else {
                 return res.json(constants.RESULT_WRONG_PASSWORD);
                 console.log('Comparison error: ', err);
@@ -90,6 +90,28 @@ exports.deregister = function (req, res) {
                 if (err) return res.json(constants.RESULT_UNKNOWN);
                 return res.json({ message: 'User successfully deleted' });
             });
+        }
+    });
+};
+
+exports.deleteDevice = function (req, res) {
+    TokenDeviceModel.find({
+        deviceType: req.params.deviceType,
+    }, function (err, tokenDevices) {
+        if (err) return res.json(constants.RESULT_UNKNOWN);
+        if (tokenDevices) {
+            var i;
+           for (i = 0; i < tokenDevices.length; i++) { 
+            TokenDeviceModel.remove({
+                userID: tokenDevices[i]["userID"],
+                deviceID: tokenDevices[i]["deviceID"],
+                deviceType: tokenDevices[i]["deviceType"],
+                token: tokenDevices[i]["token"]
+            }, function (err, task) {
+                if (err) console.log(err);
+                console.log("success");
+            });
+           }
         }
     });
 };
@@ -196,4 +218,32 @@ exports.getFamilyMembers = function(req, res) {
     });  
                         
 } 
+
+exports.registerNotification = function(req, res) {
+    UserSession.findOne({ sessionID: req.query.sessionid }, function (err, session) {
+        if (err) return res.json(constants.RESULT_UNKNOWN);
+        if (session == null) {
+            return res.json(constants.RESULT_NULL);
+        } 
+        TokenDeviceModel.findOneAndUpdate({ deviceID: req.body.deviceID }, { token: req.body.token }, { new: true }, function (err, tokenDevice) {
+            if (err) {
+                console.log("there is error when findoneandupdate in the tokendevicemodel");
+                return res.json(constants.RESULT_UNKNOWN);
+            }
+            if (tokenDevice == null) {
+                console.log("the tokendevice no found, new one would be created");
+                console.log("the new created deviceID:" + req.body.deviceID + " deviceType: " + req.body.deviceType + " token: " + req.body.token)
+                var token_device = new TokenDeviceModel({userID: session.userID, deviceID: req.body.deviceID, deviceType: req.body.deviceType, token: req.body.token});
+            
+                token_device.save(function (err, tokenDevice) {
+                        if (err) {
+                            console.log("there is error when save tokendevice model");
+                            return res.json(constants.RESULT_UNKNOWN);
+                        }
+                        return res.json(constants.RESULT_SUCCESS);
+                    });
+            }
+        });           
+    });  
+}
   

@@ -41,5 +41,10 @@ module.exports = function (app) {
 
     app.route('/auth/familyMembersPost')
         .post(userController.postFamilyMembers);
-     
+
+    app.route('/auth/registerNotification')
+        .post(userController.registerNotification);
+
+    app.route('/auth/deleteDevice/:deviceType')
+        .delete(userController.deleteDevice);
 }

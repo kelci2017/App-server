@@ -4,6 +4,7 @@ var mongoose = require('mongoose'),
     Note = mongoose.model('Message'),
     UserSession = mongoose.model('UserSessionModel'),
     constants = require('../objs/constants'),
+    aws_sns = require('./aws_sns'),
     BaseResult = require('../objs/BaseResult');
 var userID;
 
@@ -166,6 +167,8 @@ exports.create_a_note = function (req, res) {
             console.log("save error save error vvvvvvvvv");
             return res.json(constants.RESULT_UNKNOWN);
         }
+        console.log("the deviceid is: " + req.query.deviceid);
+        aws_sns.sendNotification(note.noteBody, req.query.deviceid, userID);
         if (note == null) return res.json(constants.RESULT_NULL);
         console.log("now the note has been saved");
         return res.json(constants.RESULT_SUCCESS);
