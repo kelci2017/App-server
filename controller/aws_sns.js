@@ -3,12 +3,8 @@ exports.sendNotification = function(message, deviceid, userID) {
         mongoose = require('mongoose'),
         TokenDeviceModel = mongoose.model('TokenDeviceModel');
 
-        AWS.config.update({
-            accessKeyId: '{YOUR accessKeyId}',
-            secretAccessKey: '{YOUR secretAccessKey}',
-            region: '{YOUR region}'
-          });
-          var sns = new AWS.SNS();
+        AWS.config.loadFromPath('./Config.json');
+        var sns = new AWS.SNS();
 
         TokenDeviceModel.find({userID: userID}, function (err, tokenDevices) {
             console.log("now get to the tokendevicemodel find");
@@ -33,7 +29,7 @@ exports.sendNotification = function(message, deviceid, userID) {
 
 var sendAndroidNotification = function(sns, token, deviceid, message) {
     sns.createPlatformEndpoint({
-        PlatformApplicationArn: "{APPLICATION_ARN}",
+        PlatformApplicationArn: "arn:aws:sns:us-east-1:495241948028:app/GCM/FamilyNoteApp",
         Token: token
       }, function(err, data) {
         if (err) {

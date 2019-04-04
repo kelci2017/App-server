@@ -8,6 +8,7 @@ var express = require('express'),
     User = require('./models/userModel'),
     UserSession = require('./models/userSessionModel'),
     UserFamilyMembers = require('./models/UserFamilyMembersModel'),
+    TokenDeviceModel = require('./models/TokenDeviceModel'),
     mongoose = require('mongoose');
 var cors = require('cors');
 
