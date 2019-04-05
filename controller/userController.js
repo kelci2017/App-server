@@ -123,7 +123,7 @@ exports.sessionCheck = function (req, res) {
 var requestToken = function(user, userID, res) {
     var request = require('request');
     request({
-        url: "http://jacob.jandjzone.com:9109/auth/getToken",
+        url: "http://127.0.0.1:9109/auth/getToken",
         method: "GET",
         headers: {
             "requestkey": jwt.sign({ email: user.email }, auth_config.key),

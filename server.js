@@ -14,7 +14,14 @@ var cors = require('cors');
 
 app.use(cors());
 mongoose.Promise = global.Promise;
-mongoose.connect('mongodb://localhost/Notedb', { useNewUrlParser: true });
+mongoose.connect('mongodb://127.0.0.1/Notedb', { useNewUrlParser: true });
+
+mongoose.connection.on('connected', function(){
+    console.log("mongoose is connected successfully")
+});
+mongoose.connection.on('error', function(){
+    console.log("mongoose is not connected..")
+});
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
