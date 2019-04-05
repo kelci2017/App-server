@@ -9,7 +9,7 @@ exports.verify_token = function (req, res, next) {
         
 
     request({
-        url: "http://localhost:8080/auth/verifyToken",
+        url: "http://jacob.jandjzone.com:9109/auth/verifyToken",
         method: "GET",
         headers: {
             "authorization": token,
@@ -50,7 +50,7 @@ exports.getToken = function(req, res) {
             if (err) return res.json(constants.RESULT_UNKNOWN);
             if (user) {
                 request({
-                    url: "http://localhost:8080/auth/getToken",
+                    url: "http://jacob.jandjzone.com:9109/auth/getToken",
                     method: "GET",
                     headers: {
                         "requestkey": jwt.sign({ email: user.email }, auth_config.key),
