@@ -11,7 +11,6 @@ var userID;
 exports.validSession = function(req, res, next){
 
     UserSession.findOne({ sessionID: req.query.sessionid }, function (err, session) {
-        console.log("the sessionid is at the validate session: " + session.sessionID)
         if (err) {
             console.log("validateSession unknow error 1")
             return res.json(constants.RESULT_UNKNOWN);
