@@ -32,9 +32,7 @@ exports.register = function (req, res) {
         requestToken(user, user.userID, res);
         //return res.json(new BaseResult(97, user));
     });
-    }).maxTime(3000).exec(function(err, doc) { 
-        return res.json(constants.RESULT_UNKNOWN);
-     });
+    });
 };
 
 exports.sign_in = function (req, res) {
@@ -56,9 +54,7 @@ exports.sign_in = function (req, res) {
                 console.log('Comparison error: ', err);
                }
                         }
-                    }).maxTime(3000).exec(function(err, doc) { 
-                        return res.json(constants.RESULT_UNKNOWN);
-                     });
+                    });
 };
 
 
@@ -69,9 +65,7 @@ exports.sign_out = function (req, res) {
             }, function (err, session) {
                 if (err) return res.json(constants.RESULT_UNKNOWN);
                 return res.json(constants.RESULT_SUCCESS);
-            }).maxTime(3000).exec(function(err, doc) { 
-                return res.json(constants.RESULT_UNKNOWN);
-             });
+            });
         
 };
 
@@ -154,11 +148,7 @@ var requestToken = function(user, userID, res) {
                     return res.json(constants.RESULT_UNKNOWN);
                 }
                 return res.json(new TokenSessionResult(body.resultCode, body.resultDesc, userID, body.token, sessionID));
-            }).maxTime(3000).exec(function(err, doc) { 
-                return res.json(constants.RESULT_UNKNOWN);
-             });
-            
-            
+            });           
         }
 
     });   
@@ -200,13 +190,9 @@ var requestToken = function(user, userID, res) {
                     return res.json(constants.RESULT_SUCCESS);
                 });
             }
-        }).maxTime(3000).exec(function(err, doc) { 
-            return res.json(constants.RESULT_UNKNOWN);
-         });
+        });
             
-    }).maxTime(3000).exec(function(err, doc) { 
-        return res.json(constants.RESULT_UNKNOWN);
-     });   
+    });   
                         
 } 
 
@@ -226,12 +212,8 @@ exports.getFamilyMembers = function(req, res) {
             if (userFamilyMembers.familyMembers == null) return res.json(constants.RESULT_NULL);
             console.log("The family members got from databse is; " + userFamilyMembers.familyMembers);
             return res.json(new BaseResult(0, userFamilyMembers.familyMembers));
-        }).maxTime(3000).exec(function(err, doc) { 
-            return res.json(constants.RESULT_UNKNOWN);
-         });    
-    }).maxTime(3000).exec(function(err, doc) { 
-        return res.json(constants.RESULT_UNKNOWN);
-     });  
+        });    
+    });  
                         
 } 
 
@@ -257,15 +239,9 @@ exports.registerNotification = function(req, res) {
                             return res.json(constants.RESULT_UNKNOWN);
                         }
                         return res.json(constants.RESULT_SUCCESS);
-                    }).maxTime(3000).exec(function(err, doc) { 
-                        return res.json(constants.RESULT_UNKNOWN);
-                     });
+                    });
             }
-        }).maxTime(3000).exec(function(err, doc) { 
-            return res.json(constants.RESULT_UNKNOWN);
-         });           
-    }).maxTime(3000).exec(function(err, doc) { 
-        return res.json(constants.RESULT_UNKNOWN);
-     });  
+        });           
+    });  
 }
   
