@@ -24,7 +24,10 @@ exports.validSession = function(req, res, next){
                 userID = sesion.userID;
                 console.log("the userID at the validsession is: " + userID); 
                 next();
-            });
+            }).maxTime(3000).exec(function(err, doc) { 
+                console.log("the mongoose query is timeout at UserSession findoneandupdate");
+                return res.json(constants.RESULT_UNKNOWN);
+             });
             
         } else {
             UserSession.remove({
@@ -34,10 +37,16 @@ exports.validSession = function(req, res, next){
                     console.log("validateSession unknow error 3")
                     return res.json(constants.RESULT_TIMEOUT);
                 }
-            });
+            }).maxTime(3000).exec(function(err, doc) {
+                console.log("the mongoose query is timeout at UserSession remove");
+                return res.json(constants.RESULT_UNKNOWN);
+             });
             return res.json(constants.RESULT_TIMEOUT);
         }      
-    });
+    }).maxTime(4000).exec(function(err, doc) { 
+        console.log("the mongoose query is timeout at UserSession findone");
+        return res.json(constants.RESULT_UNKNOWN);
+     });
 }
 
 var list_notes_by_date = function (req, res) {
@@ -48,7 +57,10 @@ var list_notes_by_date = function (req, res) {
         } 
         if (note == null) return res.json(constants.RESULT_NULL);
         return res.json(new BaseResult(0, note));
-    });
+    }).maxTime(3000).exec(function(err, doc) { 
+        console.log("the mongoose query is timeout at list_notes_by_date");
+        return res.json(constants.RESULT_UNKNOWN);
+     });
 };
 
 var list_notes_by_toWhom = function (req, res) {
@@ -59,7 +71,10 @@ var list_notes_by_toWhom = function (req, res) {
         }
         if (note == null) return res.json(constants.RESULT_NULL);
         return res.json(new BaseResult(0, note));
-    });
+    }).maxTime(3000).exec(function(err, doc) { 
+        console.log("the mongoose query is timeout at list_notes_by_toWhom");
+        return res.json(constants.RESULT_UNKNOWN);
+     });
 };
 
 var list_notes_by_fromWhom = function (req, res) {
@@ -70,7 +85,10 @@ var list_notes_by_fromWhom = function (req, res) {
         }
         if (note == null) return res.json(constants.RESULT_NULL);
         return res.json(new BaseResult(0, note));
-    });
+    }).maxTime(3000).exec(function(err, doc) { 
+        console.log("the mongoose query is timeout at list_notes_by_fromWhom"); 
+        return res.json(constants.RESULT_UNKNOWN);
+     });
 };
 
 var list_notes_by_fromTo = function (req, res) {
@@ -81,7 +99,10 @@ var list_notes_by_fromTo = function (req, res) {
         }
         if (note == null) return res.json(constants.RESULT_NULL);
         return res.json(new BaseResult(0, note));
-    });
+    }).maxTime(3000).exec(function(err, doc) {
+        console.log("the mongoose query is timeout at list_notes_by_fromTo"); 
+        return res.json(constants.RESULT_UNKNOWN);
+     });
 };
 
 var list_notes_by_fromDate = function (req, res) {
@@ -92,7 +113,10 @@ var list_notes_by_fromDate = function (req, res) {
         }
         if (note == null) return res.json(constants.RESULT_NULL);
         return res.json(new BaseResult(0, note));
-    });
+    }).maxTime(3000).exec(function(err, doc) { 
+        console.log("the mongoose query is timeout at list_notes_by_fromDate");
+        return res.json(constants.RESULT_UNKNOWN);
+     });
 };
 
 var list_notes_by_toDate = function (req, res) {
@@ -103,7 +127,10 @@ var list_notes_by_toDate = function (req, res) {
         }
         if (note == null) return res.json(constants.RESULT_NULL);
         return res.json(new BaseResult(0, note));
-    });
+    }).maxTime(3000).exec(function(err, doc) { 
+        console.log("the mongoose query is timeout at list_notes_by_toDate");
+        return res.json(constants.RESULT_UNKNOWN);
+     });
 };
 
 var list_notes_by_fromToDate = function (req, res) {
@@ -114,7 +141,10 @@ var list_notes_by_fromToDate = function (req, res) {
         }
         if (note == null) return res.json(constants.RESULT_NULL);
         return res.json(new BaseResult(0, note));
-    });
+    }).maxTime(3000).exec(function(err, doc) { 
+        console.log("the mongoose query is timeout at list_notes_by_fromToDate");
+        return res.json(constants.RESULT_UNKNOWN);
+     });
 };
 
 exports.list_notes_by_search = function (req, res) {
@@ -167,7 +197,10 @@ exports.create_a_note = function (req, res) {
         if (note == null) return res.json(constants.RESULT_NULL);
         console.log("now the note has been saved");
         return res.json(constants.RESULT_SUCCESS);
-    });
+    }).maxTime(3000).exec(function(err, doc) { 
+        console.log("the mongoose query is timeout at list_notes_by_fromToDate");
+        return res.json(constants.RESULT_UNKNOWN);
+     });
 };
 
 exports.read_notes_by_keywords = function (req, res) {
@@ -183,6 +216,9 @@ exports.read_notes_by_keywords = function (req, res) {
             return res.json(constants.RESULT_NULL);
         }
         return res.json(new BaseResult(0, note));
-    });
+    }).maxTime(3000).exec(function(err, doc) { 
+        console.log("the mongoose query is timeout at read_notes_by_keywords");
+        return res.json(constants.RESULT_UNKNOWN);
+     });
    
 };

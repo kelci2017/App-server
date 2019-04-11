@@ -14,14 +14,37 @@ var cors = require('cors');
 
 app.use(cors());
 mongoose.Promise = global.Promise;
-mongoose.connect('mongodb://127.0.0.1/Notedb', { useNewUrlParser: true });
+// mongoose.connect('mongodb://127.0.0.1/Notedb', { useNewUrlParser: true });
+
+run().catch(error => console.error(error));
+
+async function run() {
+  await mongoose.connect('mongodb://127.0.0.1/Notedb', {
+    useNewUrlParser: true, 
+    autoReconnect: true,
+    reconnectTries: 1000000,
+    reconnectInterval: 300,
+    bufferMaxEntries: 0 // Disable node driver's buffering as well
+  });
+}
 
 mongoose.connection.on('connected', function(){
-    console.log("mongoose is connected successfully")
+    console.log("mongoose Connection connected")
 });
 mongoose.connection.on('error', function(){
-    console.log("mongoose is not connected..")
+    console.log("mongoose Connection error")
 });
+mongoose.connection.on("reconnected", () => {
+    console.log("mongoose Connection Reestablished");
+  });
+  
+mongoose.connection.on("disconnected", () => {
+    console.log("mongoose Connection Disconnected");
+  });
+  
+mongoose.connection.on("close", () => {
+    console.log("mongoose Connection Closed");
+  });
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
