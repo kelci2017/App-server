@@ -19,7 +19,7 @@ exports.register = function (req, res) {
     User.findOne({
         email: req.body.email
     }, function (err, user) {
-        if (err) return res.json(constants.RESULT_UNKNOWN);
+        if (err || !user) return res.json(constants.RESULT_UNKNOWN);
         if (user) return res.json(constants.RESULT_USER_EXISTED);
         console.log("the request body is: " + req.body.toString());
         var newUser = new User(req.body);
@@ -81,7 +81,7 @@ exports.deregister = function (req, res) {
     User.findOne({
         userName: req.params.userName,
     }, function (err, user) {
-        if (err) return res.json(constants.RESULT_UNKNOWN);
+        if (err || !user) return res.json(constants.RESULT_UNKNOWN);
         if (user) {
             User.remove({
                 userName: user.userName,
@@ -162,11 +162,11 @@ var requestToken = function(user, userID, res) {
         
     UserSession.findOne({ sessionID: req.query.sessionid }, function (err, session) {
         if (err) return res.json(constants.RESULT_UNKNOWN);
-        if (session == null) {
+        if (session == null || !session) {
             return res.json(constants.RESULT_NULL);
         } 
         UserFamilyMembers.findOne({ userID: session.userID }, function (err, familyMembersModel) {
-            if (err) {
+            if (err || !familyMembersModel) {
                 
                 return res.json(constants.RESULT_UNKNOWN);
             }
@@ -204,12 +204,12 @@ exports.getFamilyMembers = function(req, res) {
         
     UserSession.findOne({ sessionID: req.query.sessionid }, function (err, session) {
         if (err) return res.json(constants.RESULT_UNKNOWN);
-        if (session == null) {
+        if (session == null || !session) {
             return res.json(constants.RESULT_NULL);
         } 
         UserFamilyMembers.findOne({ userID: session.userID }, function (err, userFamilyMembers) {
             if (err) return res.json(constants.RESULT_UNKNOWN);
-            if (userFamilyMembers.familyMembers == null) return res.json(constants.RESULT_NULL);
+            if (userFamilyMembers.familyMembers == null || !userFamilyMembers) return res.json(constants.RESULT_NULL);
             console.log("The family members got from databse is; " + userFamilyMembers.familyMembers);
             return res.json(new BaseResult(0, userFamilyMembers.familyMembers));
         });    
@@ -220,7 +220,7 @@ exports.getFamilyMembers = function(req, res) {
 exports.registerNotification = function(req, res) {
     UserSession.findOne({ sessionID: req.query.sessionid }, function (err, session) {
         if (err) return res.json(constants.RESULT_UNKNOWN);
-        if (session == null) {
+        if (session == null || !session) {
             return res.json(constants.RESULT_NULL);
         } 
         TokenDeviceModel.findOneAndUpdate({ deviceID: req.body.deviceID }, { token: req.body.token }, { new: true }, function (err, tokenDevice) {

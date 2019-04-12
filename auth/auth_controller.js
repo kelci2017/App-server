@@ -40,14 +40,14 @@ exports.getToken = function(req, res) {
     UserSession.findOne({ sessionID: req.query.sessionid }, function (err, session) {
         //console.log("the sessionid is at the validate session: " + session.sessionID)
         if (err) return res.json(constants.RESULT_UNKNOWN);
-        if (session == null) {
+        if (session == null || !session) {
             console.log("session is null at the validate session");
             return res.json(constants.RESULT_NULL);
         } 
         User.findOne({
             userID: session.userID
         }, function (err, user) {
-            if (err) return res.json(constants.RESULT_UNKNOWN);
+            if (err || !user || user == null) return res.json(constants.RESULT_UNKNOWN);
             if (user) {
                 request({
                     url: "http://127.0.0.1:9109/auth/getToken",
