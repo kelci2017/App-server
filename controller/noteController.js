@@ -9,35 +9,39 @@ var mongoose = require('mongoose'),
 var userID;
 
 exports.validSession = function(req, res, next){
-
-    UserSession.findOne({ sessionID: req.query.sessionid }, function (err, session) {
-        if (err || session == null || !session) {
-            console.log("validateSession unknow error 1")
-            return res.json(constants.RESULT_TIMEOUT);
-        }
-        if (Math.abs(new Date() - session.timeStamp) / 86400000 <= 2) {
-            UserSession.findOneAndUpdate({ sessionID: req.query.sessionid }, { timeStamp: new Date() }, { new: true }, function (err, sesion) {
-                if (err) {
-                    console.log("validateSession unknow error 2")
-                    return res.json(constants.RESULT_TIMEOUT);
-                }
-                userID = sesion.userID;
-                console.log("the userID at the validsession is: " + userID); 
-                next();
-            });
-            
-        } else {
-            UserSession.remove({
-                sessionID: req.query.sessionid
-            }, function (err, session) {
-                if (err) {
-                    console.log("validateSession unknow error 3")
-                    return res.json(constants.RESULT_TIMEOUT);
-                }
-            });
-            return res.json(constants.RESULT_TIMEOUT);
-        }      
-    });
+    try {
+        UserSession.findOne({ sessionID: req.query.sessionid }, function (err, session) {
+            if (err || session == null || !session) {
+                console.log("validateSession unknow error 1")
+                return res.json(constants.RESULT_TIMEOUT);
+            }
+            if (Math.abs(new Date() - session.timeStamp) / 86400000 <= 2) {
+                UserSession.findOneAndUpdate({ sessionID: req.query.sessionid }, { timeStamp: new Date() }, { new: true }, function (err, sesion) {
+                    if (err) {
+                        console.log("validateSession unknow error 2")
+                        return res.json(constants.RESULT_TIMEOUT);
+                    }
+                    userID = sesion.userID;
+                    console.log("the userID at the validsession is: " + userID); 
+                    next();
+                });
+                
+            } else {
+                UserSession.remove({
+                    sessionID: req.query.sessionid
+                }, function (err, session) {
+                    if (err) {
+                        console.log("validateSession unknow error 3")
+                        return res.json(constants.RESULT_TIMEOUT);
+                    }
+                });
+                return res.json(constants.RESULT_TIMEOUT);
+            }      
+        });
+    } catch(e) {
+       console.log("validatesession at notecontroller usersession findone catch error " + e);
+       return res.json(constants.RESULT_UNKNOWN);
+    }  
 }
 
 var list_notes_by_date = function (req, res) {

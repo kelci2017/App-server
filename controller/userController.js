@@ -16,45 +16,55 @@ var mongose = require('mongoose'),
 
 
 exports.register = function (req, res) {
-    User.findOne({
-        email: req.body.email
-    }, function (err, user) {
-        if (err || !user) return res.json(constants.RESULT_UNKNOWN);
-        if (user) return res.json(constants.RESULT_USER_EXISTED);
-        console.log("the request body is: " + req.body.toString());
-        var newUser = new User(req.body);
-        newUser.hash_password = bcrypt.hashSync(req.body.password, 10);
-        var uuid4 = UUID.v4('String');
-        newUser.userID = uuid4.toString();
-        newUser.save(function (err, user) {
-        if (err) return res.json(constants.RESULT_UNKNOWN);
-        if (user == null) return res.json(constants.RESULT_NOTE_NULL);
-        requestToken(user, user.userID, res);
-        //return res.json(new BaseResult(97, user));
-    });
-    });
+    try {
+        User.findOne({
+            email: req.body.email
+        }, function (err, user) {
+            if (err || !user) return res.json(constants.RESULT_UNKNOWN);
+            if (user) return res.json(constants.RESULT_USER_EXISTED);
+            console.log("the request body is: " + req.body.toString());
+            var newUser = new User(req.body);
+            newUser.hash_password = bcrypt.hashSync(req.body.password, 10);
+            var uuid4 = UUID.v4('String');
+            newUser.userID = uuid4.toString();
+            newUser.save(function (err, user) {
+            if (err) return res.json(constants.RESULT_UNKNOWN);
+            if (user == null) return res.json(constants.RESULT_NOTE_NULL);
+            requestToken(user, user.userID, res);
+            //return res.json(new BaseResult(97, user));
+        });
+        });
+    } catch(e) {
+      console.log("userController register user findone try catch error " + e);
+      return res.json(constants.RESULT_UNKNOWN);
+    } 
 };
 
 exports.sign_in = function (req, res) {
-    User.findOne({
-        email: req.body.email
-    }, function (err, user) {
-        if (user) console.log("user name found is: " + user.userName);
-        if (err) return res.json(constants.RESULT_UNKNOWN);
-        if (!user) {
-            return res.json(constants.RESULT_USER_NOTFOUND);
-        } else if (user) {
-            console.log("the useris from body is: " + req.body.userid);
-            if(bcrypt.compareSync(req.body.password, user.hash_password)) {
-                console.log("logged in here"); 
-                console.log("userid after loggedin is: " + user.userID);          
-                requestToken(user, user.userID, res);
-               } else {
-                return res.json(constants.RESULT_WRONG_PASSWORD);
-                console.log('Comparison error: ', err);
-               }
-                        }
-                    });
+    try {
+        User.findOne({
+            email: req.body.email
+        }, function (err, user) {
+            if (user) console.log("user name found is: " + user.userName);
+            if (err) return res.json(constants.RESULT_UNKNOWN);
+            if (!user) {
+                return res.json(constants.RESULT_USER_NOTFOUND);
+            } else if (user) {
+                console.log("the useris from body is: " + req.body.userid);
+                if(bcrypt.compareSync(req.body.password, user.hash_password)) {
+                    console.log("logged in here"); 
+                    console.log("userid after loggedin is: " + user.userID);          
+                    requestToken(user, user.userID, res);
+                   } else {
+                    return res.json(constants.RESULT_WRONG_PASSWORD);
+                    console.log('Comparison error: ', err);
+                   }
+                            }
+                        });
+    } catch(e) {
+        console.log("userController sing_in user findone try catch error " + e);
+        return res.json(constants.RESULT_UNKNOWN);
+    } 
 };
 
 
@@ -159,41 +169,49 @@ var requestToken = function(user, userID, res) {
     var UserFamilyMembers = mongose.model('UserFamilyMembers'),
         UserSession = mongose.model('UserSessionModel');
         console.log("post post post -----------------" + req.body.familyMembers);
-        
-    UserSession.findOne({ sessionID: req.query.sessionid }, function (err, session) {
-        if (err) return res.json(constants.RESULT_UNKNOWN);
-        if (session == null || !session) {
-            return res.json(constants.RESULT_NULL);
-        } 
-        UserFamilyMembers.findOne({ userID: session.userID }, function (err, familyMembersModel) {
-            if (err || !familyMembersModel) {
-                
+    
+    try{
+        UserSession.findOne({ sessionID: req.query.sessionid }, function (err, session) {
+            if (err) return res.json(constants.RESULT_UNKNOWN);
+            if (session == null || !session) {
+                return res.json(constants.RESULT_NULL);
+            } 
+            try {
+                UserFamilyMembers.findOne({ userID: session.userID }, function (err, familyMembersModel) {
+                    if (err || !familyMembersModel) {
+                        
+                        return res.json(constants.RESULT_UNKNOWN);
+                    }
+                    if (familyMembersModel == null) {
+                        var new_userFamilyMembers = new UserFamilyMembers(req.body);
+                        new_userFamilyMembers.save(function (err, familyMembersModel) {
+                            if (err) {                       
+                                return res.json(constants.RESULT_UNKNOWN);
+                            }
+                            if (familyMembersModel == null) return res.json(constants.RESULT_NULL);
+                            console.log("now the family members has been saved");
+                            //return res.json(new BaseResult(0, familyMembersModel.familyMembers));
+                            return res.json(constants.RESULT_SUCCESS);
+                        });
+                    } else {
+                        UserFamilyMembers.findOneAndUpdate({ userID: session.userID }, { familyMembers: req.body.familyMembers }, { new: true }, function (err, familyMembers) {
+                            if (err) {
+                                console.log("error error");
+                                return res.json(constants.RESULT_UNKNOWN);
+                            }
+                            return res.json(constants.RESULT_SUCCESS);
+                        });
+                    }
+                });
+            } catch(e) {
+                console.log("userController postfamilymembers userfamilymembers findone try catch error " + e);
                 return res.json(constants.RESULT_UNKNOWN);
             }
-            if (familyMembersModel == null) {
-                var new_userFamilyMembers = new UserFamilyMembers(req.body);
-                new_userFamilyMembers.save(function (err, familyMembersModel) {
-                    if (err) {                       
-                        return res.json(constants.RESULT_UNKNOWN);
-                    }
-                    if (familyMembersModel == null) return res.json(constants.RESULT_NULL);
-                    console.log("now the family members has been saved");
-                    //return res.json(new BaseResult(0, familyMembersModel.familyMembers));
-                    return res.json(constants.RESULT_SUCCESS);
-                });
-            } else {
-                UserFamilyMembers.findOneAndUpdate({ userID: session.userID }, { familyMembers: req.body.familyMembers }, { new: true }, function (err, familyMembers) {
-                    if (err) {
-                        console.log("error error");
-                        return res.json(constants.RESULT_UNKNOWN);
-                    }
-                    return res.json(constants.RESULT_SUCCESS);
-                });
-            }
-        });
-            
-    });   
-                        
+        });  
+    } catch(e) {
+        console.log("userController postfamilymembers usersession findone try catch error " + e);
+        return res.json(constants.RESULT_UNKNOWN);
+    }                       
 } 
 
 exports.getFamilyMembers = function(req, res) {
@@ -201,47 +219,60 @@ exports.getFamilyMembers = function(req, res) {
         UserSession = mongose.model('UserSessionModel');
 
         console.log("get get .................")
-        
-    UserSession.findOne({ sessionID: req.query.sessionid }, function (err, session) {
-        if (err) return res.json(constants.RESULT_UNKNOWN);
-        if (session == null || !session) {
-            return res.json(constants.RESULT_NULL);
-        } 
-        UserFamilyMembers.findOne({ userID: session.userID }, function (err, userFamilyMembers) {
+    try {
+        UserSession.findOne({ sessionID: req.query.sessionid }, function (err, session) {
             if (err) return res.json(constants.RESULT_UNKNOWN);
-            if (userFamilyMembers.familyMembers == null || !userFamilyMembers) return res.json(constants.RESULT_NULL);
-            console.log("The family members got from databse is; " + userFamilyMembers.familyMembers);
-            return res.json(new BaseResult(0, userFamilyMembers.familyMembers));
-        });    
-    });  
-                        
+            if (session == null || !session) {
+                return res.json(constants.RESULT_NULL);
+            } 
+            try {
+                UserFamilyMembers.findOne({ userID: session.userID }, function (err, userFamilyMembers) {
+                    if (err) return res.json(constants.RESULT_UNKNOWN);
+                    if (userFamilyMembers.familyMembers == null || !userFamilyMembers) return res.json(constants.RESULT_NULL);
+                    console.log("The family members got from databse is; " + userFamilyMembers.familyMembers);
+                    return res.json(new BaseResult(0, userFamilyMembers.familyMembers));
+                }); 
+            } catch(e) {
+                console.log("userController getfamilymembers userfamilymembers findone try catch error " + e);
+                return res.json(constants.RESULT_UNKNOWN);
+            }     
+        }); 
+    } catch(e) {
+        console.log("userController getfamilymembers usersession findone try catch error " + e);
+        return res.json(constants.RESULT_UNKNOWN);
+    }                        
 } 
 
 exports.registerNotification = function(req, res) {
-    UserSession.findOne({ sessionID: req.query.sessionid }, function (err, session) {
-        if (err) return res.json(constants.RESULT_UNKNOWN);
-        if (session == null || !session) {
-            return res.json(constants.RESULT_NULL);
-        } 
-        TokenDeviceModel.findOneAndUpdate({ deviceID: req.body.deviceID }, { token: req.body.token }, { new: true }, function (err, tokenDevice) {
-            if (err) {
-                console.log("there is error when findoneandupdate in the tokendevicemodel");
-                return res.json(constants.RESULT_UNKNOWN);
-            }
-            if (tokenDevice == null) {
-                console.log("the tokendevice no found, new one would be created");
-                console.log("the new created deviceID:" + req.body.deviceID + " deviceType: " + req.body.deviceType + " token: " + req.body.token)
-                var token_device = new TokenDeviceModel({userID: session.userID, deviceID: req.body.deviceID, deviceType: req.body.deviceType, token: req.body.token});
-            
-                token_device.save(function (err, tokenDevice) {
-                        if (err) {
-                            console.log("there is error when save tokendevice model");
-                            return res.json(constants.RESULT_UNKNOWN);
-                        }
-                        return res.json(constants.RESULT_SUCCESS);
-                    });
-            }
-        });           
-    });  
+    try {
+        UserSession.findOne({ sessionID: req.query.sessionid }, function (err, session) {
+            if (err) return res.json(constants.RESULT_UNKNOWN);
+            if (session == null || !session) {
+                return res.json(constants.RESULT_NULL);
+            } 
+            TokenDeviceModel.findOneAndUpdate({ deviceID: req.body.deviceID }, { token: req.body.token }, { new: true }, function (err, tokenDevice) {
+                if (err) {
+                    console.log("there is error when findoneandupdate in the tokendevicemodel");
+                    return res.json(constants.RESULT_UNKNOWN);
+                }
+                if (tokenDevice == null) {
+                    console.log("the tokendevice no found, new one would be created");
+                    console.log("the new created deviceID:" + req.body.deviceID + " deviceType: " + req.body.deviceType + " token: " + req.body.token)
+                    var token_device = new TokenDeviceModel({userID: session.userID, deviceID: req.body.deviceID, deviceType: req.body.deviceType, token: req.body.token});
+                
+                    token_device.save(function (err, tokenDevice) {
+                            if (err) {
+                                console.log("there is error when save tokendevice model");
+                                return res.json(constants.RESULT_UNKNOWN);
+                            }
+                            return res.json(constants.RESULT_SUCCESS);
+                        });
+                }
+            });           
+        });  
+    } catch(e) {
+        console.log("userController registernotification usersession findone try catch error " + e);
+        return res.json(constants.RESULT_UNKNOWN);
+    }   
 }
   

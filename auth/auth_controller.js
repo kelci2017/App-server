@@ -37,40 +37,49 @@ exports.getToken = function(req, res) {
         auth_config = require('./auth_config');
         
     var request = require('request');
-    UserSession.findOne({ sessionID: req.query.sessionid }, function (err, session) {
-        //console.log("the sessionid is at the validate session: " + session.sessionID)
-        if (err) return res.json(constants.RESULT_UNKNOWN);
-        if (session == null || !session) {
-            console.log("session is null at the validate session");
-            return res.json(constants.RESULT_NULL);
-        } 
-        User.findOne({
-            userID: session.userID
-        }, function (err, user) {
-            if (err || !user || user == null) return res.json(constants.RESULT_UNKNOWN);
-            if (user) {
-                request({
-                    url: "http://127.0.0.1:9109/auth/getToken",
-                    method: "GET",
-                    headers: {
-                        "requestkey": jwt.sign({ email: user.email }, auth_config.key),
-                        "applicationid":1987
-                    },
-                    json: true
-                }, function (error, response, body) {
-                    if (error) return res.json(constants.RESULT_UNKNOWN);
-                    if (!body) return res.json(constants.RESULT_ACCESS_DENIED);
-                    if (body.resultCode != 0) {
-                        console.log('body resultCode is: ', body.resultCode );
-                        return res.json(body);
+    try {
+        UserSession.findOne({ sessionID: req.query.sessionid }, function (err, session) {
+            //console.log("the sessionid is at the validate session: " + session.sessionID)
+            if (err) return res.json(constants.RESULT_UNKNOWN);
+            if (session == null || !session) {
+                console.log("session is null at the validate session");
+                return res.json(constants.RESULT_NULL);
+            } 
+            try {
+                User.findOne({
+                    userID: session.userID
+                }, function (err, user) {
+                    if (err || !user || user == null) return res.json(constants.RESULT_UNKNOWN);
+                    if (user) {
+                        request({
+                            url: "http://127.0.0.1:9109/auth/getToken",
+                            method: "GET",
+                            headers: {
+                                "requestkey": jwt.sign({ email: user.email }, auth_config.key),
+                                "applicationid":1987
+                            },
+                            json: true
+                        }, function (error, response, body) {
+                            if (error) return res.json(constants.RESULT_UNKNOWN);
+                            if (!body) return res.json(constants.RESULT_ACCESS_DENIED);
+                            if (body.resultCode != 0) {
+                                console.log('body resultCode is: ', body.resultCode );
+                                return res.json(body);
+                            }
+                            if (body.resultCode == 0) {
+                                return res.json(new TokenResult(body.resultCode, body.resultDesc, body.token));
+                            }
+            
+                        });
                     }
-                    if (body.resultCode == 0) {
-                        return res.json(new TokenResult(body.resultCode, body.resultDesc, body.token));
-                    }
-    
-                });
-            }
-        });     
-    });   
-                        
+                }); 
+            } catch(e) {
+                console.log("User findone in auth_controller try catch error" + e);
+                return res.json(constants.RESULT_UNKNOWN);
+            }    
+        });  
+    } catch(e) {
+        console.log("Usersession findone in auth_controller try catch error" + e);
+        return res.json(constants.RESULT_UNKNOWN);
+    }                        
 }
