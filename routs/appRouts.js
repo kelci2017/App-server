@@ -3,7 +3,8 @@
 module.exports = function (app) {
     var noteController = require('../controller/noteController.js'),
         userController = require('../controller/userController.js'),
-        authController = require('../auth/auth_controller');
+        authController = require('../auth/auth_controller'),
+        imageController = require('../controller/imageController.js');
 
     app.route('/notes/search/')
         .get(noteController.validSession, authController.verify_token, noteController.list_notes_by_search);
@@ -47,4 +48,10 @@ module.exports = function (app) {
 
     app.route('/auth/deleteDevice/:deviceType')
         .delete(userController.deleteDevice);
+
+    app.route('/photos/list')
+        .get(imageController.getPhotolist);
+
+    app.route('/photos/detail')
+        .get(imageController.getPhotolist);
 }
