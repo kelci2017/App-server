@@ -53,5 +53,5 @@ module.exports = function (app) {
         .get(imageController.getPhotolist);
 
     app.route('/photos/detail')
-        .get(imageController.getPhotolist);
+        .get(imageController.getPhotoDetail);
 }

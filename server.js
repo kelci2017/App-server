@@ -13,6 +13,8 @@ var express = require('express'),
 var cors = require('cors');
 
 app.use(cors());
+app.use(express.static('public'));
+
 mongoose.Promise = global.Promise;
 // mongoose.connect('mongodb://127.0.0.1/Notedb', { useNewUrlParser: true });
 
