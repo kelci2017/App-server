@@ -2,7 +2,7 @@
 
 var express = require('express'),
     app = express(),
-    port = process.env.PORT || 9110,
+    port = process.env.PORT || 9111,
     bodyParser = require('body-parser'),
     Note = require('./models/messageModel'),
     User = require('./models/userModel'),
